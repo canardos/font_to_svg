@@ -202,7 +202,7 @@ std::string do_outline(std::vector<FT_Vector> points, std::vector<char> tags, st
 				debug << " bezier to " << nnx << "," << nny << " ctlx, ctly: " << nx << "," << ny << "\n";
 			} else if (!this_isctl && !next_isctl) {
 				svg << " L " << nx << "," << ny << "\n";
-				debug << " line to " << nx << "," << ny << "\n";			
+				debug << " line to " << nx << "," << ny << "\n";
 			} else if (this_isctl && !next_isctl) {
 				debug << " this is ctrl pt. skipping to " << nx << "," << ny << "\n";
 			}
@@ -298,10 +298,13 @@ public:
 		std::cout << debug.str();
 	}
 
-	std::string svgheader() {
+	std::string svgheader(std::string id = "") {
 		tmp.str("");
 
-		tmp << "\n<svg width='" << bbwidth << "px'"
+		tmp << "\n<svg";
+		if (!id.empty())
+			tmp << " id='" << id << "'";
+		tmp << " width='" << bbwidth << "px'"
 			<< " height='" << bbheight << "px'"
 			<< " xmlns='http://www.w3.org/2000/svg' version='1.1'>";
 
@@ -444,9 +447,12 @@ public:
 		return do_outline(pointsv, tagsv, contoursv);
 	}
 
-	std::string svgfooter()  {
+	std::string svgfooter(bool close_g = true)  {
 		tmp.str("");
-		tmp << "\n </g>\n</svg>\n";
+        if (close_g)
+		    tmp << "\n </g>\n</svg>\n";
+        else
+		    tmp << "\n</svg>\n";
 		return tmp.str();
 	}
 };
